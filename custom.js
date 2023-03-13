@@ -12,6 +12,11 @@ let currentKeywords = ["繪畫", "橋樑", "文化"]; // initial keywords
 $(document).ready(function() {
     // Initialize game on page load
     initializeGame();
+    if (timeLeft <= 0) {
+      clearInterval(downloadTimer);
+      document.getElementById("timer").innerHTML = "Time's up!";
+      document.body.classList.add("timer-ended");
+    }
 });
 
   function initializeGame() {
@@ -20,19 +25,35 @@ $(document).ready(function() {
     updateTimer();
     const display = document.querySelector('#timer');
     startTimer(time, display);
-  }
+  }  
   
   function startTimer(duration, display) {
-    var timer = duration, seconds;
-    setInterval(function () {
-      seconds = parseInt(timer % 60, 10);  
+    let timer = duration * 1000;
+    let interval = setInterval(function() {
+      let minutes = Math.floor(timer / (60 * 1000));
+      let seconds = Math.floor((timer % (60 * 1000)) / 1000);
+      let milliseconds = Math.floor(timer % 1000);
+      
+      minutes = minutes < 10 ? "0" + minutes : minutes;
       seconds = seconds < 10 ? "0" + seconds : seconds;
-      display.textContent = seconds;  
-      if (--timer < 0) {
-        timer = duration;
+      milliseconds = milliseconds < 10 ? milliseconds : milliseconds < 100 ? "" + milliseconds : milliseconds;
+      
+      // display.textContent = minutes + ":" + seconds + ":" + milliseconds;
+      display.textContent = seconds + ":" + milliseconds;
+      
+      if (timer <= 0) {
+        clearInterval(interval);
+        display.textContent = "Time's up!";
+        document.body.classList.add("timer-ended");
+        document.body.classList.add("flash"); // add flash class
+        setTimeout(() => {
+          document.body.classList.remove("flash"); // remove flash class after 1 second
+        }, 1000);
       }
-    }, 1000);
-  }
+      
+      timer -= 10;
+    }, 10);
+  }  
   
   function generateKeywords() {
     let newKeywords = [];
@@ -46,7 +67,7 @@ $(document).ready(function() {
   function updateCards() {
     const cards = document.querySelectorAll(".keyword");
     cards.forEach((card, index) => {
-      // card.innerHTML = currentKeywords[index];
+      card.innerHTML = currentKeywords[index];
     });
   }
   
@@ -64,8 +85,15 @@ $(document).ready(function() {
   }
   
   // Handle next button click
-  const nextButton = document.querySelector("#next-btn");
-  nextButton.addEventListener("click", () => {
+  // const nextButton = document.querySelector("#next-btn");
+  // nextButton.addEventListener("click", () => {
+  //   generateKeywords();
+  //   updateCards();
+  //   const display = document.querySelector('#timer');
+  //   startTimer(time, display);
+  // });
+
+  document.addEventListener("click", function() {
     generateKeywords();
     updateCards();
     const display = document.querySelector('#timer');
@@ -78,6 +106,7 @@ $(document).ready(function() {
   settingsButton.addEventListener("click", () => {
     settingsForm.classList.toggle("hidden");
   });
+  
   
   
   
