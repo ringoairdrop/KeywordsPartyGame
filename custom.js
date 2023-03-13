@@ -44,9 +44,9 @@ $(document).ready(function() {
   }
   
   function updateCards() {
-    const cards = document.querySelectorAll(".card");
+    const cards = document.querySelectorAll(".keyword");
     cards.forEach((card, index) => {
-      card.innerHTML = currentKeywords[index];
+      // card.innerHTML = currentKeywords[index];
     });
   }
   
