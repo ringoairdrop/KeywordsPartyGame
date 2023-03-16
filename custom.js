@@ -21,29 +21,31 @@ $(document).ready(function() {
     card.innerHTML = currentKeywords[index];
   });
   // Test
-  // fetch('keywords.json')
-  // .then(response => response.json())
-  // .then(jsonResponse => console.log(jsonResponse))     
-  //  // outputs a javascript object from the parsed json
-
-
+  fetch('https://ringoairdrop.github.io/KeywordsPartyGame/keywords.json')
+  .then(response => response.json())
+  .then(jsonResponse => {   
+    var data = jsonResponse.keywords;
+    for (let i = 0; i < data.length; i++) {
+      keywordsList.push(data[i]);
+    }
+  })
 });
 
 const fileInput = document.getElementById("customFile");
 fileInput.addEventListener("change", function(event) {
   const file = event.target.files[0];
   const reader = new FileReader();
-
   reader.addEventListener("load", function() {
     let inputData = reader.result.split("\n");
     if (inputData.length > 0) {
       keywordsList = [];
       for (let i = 0; i < inputData.length; i++) {
-        keywordsList.push();
+        keywordsList.push(inputData[i]);
       }
+      generateKeywords();
+      updateCards();
     }
   });
-
   reader.readAsText(file);
 });
 
